@@ -1,0 +1,54 @@
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+
+
+iris = load_iris()
+
+X = pd.DataFrame(iris.data, columns=iris.feature_names)
+y = pd.Series(iris.target)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+k = 3
+knn = KNeighborsClassifier(n_neighbors=k)
+
+knn.fit(X_train, y_train)
+
+y_pred = knn.predict(X_test)
+
+print("CORRECT PREDICTIONS:")
+
+for actual, predicted in zip(y_test, y_pred):
+    if actual == predicted:
+        print(
+            "Actual:", iris.target_names[actual],
+            "Predicted:", iris.target_names[predicted]
+        )
+
+
+wrong_found = False
+
+for actual, predicted in zip(y_test, y_pred):
+    if actual != predicted:
+        wrong_found = True
+        break
+
+
+print("\nWRONG PREDICTIONS:")
+
+wrong_found = False
+
+for actual, predicted in zip(y_test, y_pred):
+    if actual != predicted:
+        wrong_found = True
+        print(
+            "Actual:", iris.target_names[actual],
+            "Predicted:", iris.target_names[predicted]
+        )
+
+if not wrong_found:
+    print("No wrong predictions found.")
